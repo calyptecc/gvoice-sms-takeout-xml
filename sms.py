@@ -6,32 +6,19 @@ import dateutil.parser
 import time, datetime
 from calendar import timegm
 import warnings
-
-import tkinter as tk
-from tkinter import filedialog
-
-root = tk.Tk()
-root.withdraw()
-
-file_path = filedialog.askopenfilename()
-
-"""
-TO DO:
-filter emoji
-fix double-double quotes
-"""
+from io import open # adds emoji support
 
 sms_backup_filename = "./gvoice-all.xml"
+print('New file will be saved to ' + sms_backup_filename)
 
 def main():
-
+    print('Checking directory for *.html files')
     num_sms = 0
     root_dir = '.'
 
     for subdir, dirs, files in os.walk(root_dir):
         for file in files:
             sms_filename = os.path.join(subdir, file)
-            #print(sms_filename)
 
             try:
                 sms_file = open(sms_filename, 'r')
@@ -39,9 +26,10 @@ def main():
                 continue
 
             if(os.path.splitext(sms_filename)[1] != '.html'):
-                print(sms_filename,"- skipped")
+                # print(sms_filename,"- skipped")
                 continue
-            print(sms_filename)
+
+            print('Processing ' + sms_filename)
 
             soup = BeautifulSoup(sms_file, 'html.parser')
 
@@ -118,9 +106,9 @@ def write_header(filename, numsms):
     backup_file.close()
 
     backup_file = open(filename, 'w')
-    backup_file.write("<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\n")
-    backup_file.write("<!--Converted from GV Takeout data -->\n")
-    backup_file.write('<smses count="' + str(numsms) + '">\n')
+    backup_file.write(u"<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>\n")
+    backup_file.write(u"<!--Converted from GV Takeout data -->\n")
+    backup_file.write(u'<smses count="' + str(numsms) + u'">\n')
     backup_file.write(backup_text)
     backup_file.close()
     
