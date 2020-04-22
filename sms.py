@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup
+import re
 import os
 import phonenumbers
+import dateutil.parser
 import time, datetime
 from calendar import timegm
 import warnings
@@ -106,9 +108,7 @@ def get_phone(messages):
 def get_time_unix(message):
     time_raw = message.find(class_='dt')
     ymdhms = time_raw['title']
-    time_obj = datetime.datetime.strptime(ymdhms.replace('Z','UTC'), '%Y-%m-%dT%H:%M:%S.%f%Z')
-    #print('GV Date: ', ymdhms)
-    #mstime = time.mktime(time_obj.timetuple()) * 1000 + time_obj.microsecond / 1000
+    time_obj = dateutil.parser.isoparse(ymdhms);
     mstime = timegm(time_obj.timetuple()) * 1000 + time_obj.microsecond / 1000
     return int(mstime)
 
